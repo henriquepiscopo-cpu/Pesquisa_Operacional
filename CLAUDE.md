@@ -1,8 +1,23 @@
 # 📊 Projeto DEA — Eficiência de Empresas de Petróleo & Gás
 
-> **Disciplina:** LE505 — Análise Envoltória de Dados  
-> **Entrega:** 03/06 via Classroom (relatório + código Python)  
+> **Disciplina:** LE505 — Análise Envoltória de Dados
+> **Entrega:** 03/06 via Classroom (relatório + código Python)
 > **Tema:** Eficiência relativa de empresas de petróleo e gás (majors internacionais)
+
+---
+
+## 🚦 Status de Execução
+
+| Etapa | Status | O que foi feito |
+|-------|--------|-----------------|
+| ETAPA 0 | ✅ Concluída | Criadas pastas `data/`, `results/figures/`. Criados `ETAPA 0/requirements.txt` (dependências: pandas, numpy, matplotlib, seaborn, yfinance, pulp, scipy, openpyxl, jupyter) e `CLAUDE.md` substituído pelo `GUIA_PROJETO_DEA.md` na raiz. |
+| ETAPA 1 | ✅ Concluída (v2) | Criado `ETAPA 1/collect_data.py`. Expandida lista de tickers de 19 para 27 para aumentar margem de DMUs. 22 DMUs válidas salvas em `data/processed_data.csv`. 5 removidas por dados incompletos (REP, MRO, HES, YPF, EC). Novas empresas adicionadas: IMO, CNQ, SU, BKR, FTI, WMB. Dados brutos em `data/raw_data.csv`. **Decisão:** Opção 1 escolhida para ampliar margem DMU — adicionar mais empresas em vez de reduzir variáveis. |
+| ETAPA 2 | ✅ Concluída | Criado `ETAPA 2/eda.py`. Estatísticas descritivas calculadas. Outlier detectado: PBR (Petrobras) em Total Assets, Receita e EBITDA. Regra DEA atendida originalmente com 16 DMUs (mínimo 15). Após expansão da ETAPA 1, margem passou para 22 DMUs ≥ 15 mínimo (margem de 7). Gráficos salvos: `results/figures/boxplots.png`, `results/figures/correlation_heatmap.png`. |
+| ETAPA 3 | ✅ Concluída | Criado `ETAPA 3/dea_models.py`. Modelos CCR e BCC implementados com PuLP, orientação output. **CCR:** 9/22 DMUs eficientes (score=1.0); mais ineficientes: CNQ (1.2597), E (1.1942), CVX (1.1849). **BCC:** 10/22 eficientes; XOM passa a eficiente no BCC. Score médio CCR: 1.0811 / BCC: 1.0591. Benchmarks mais recorrentes: PBR, EQNR, FTI, DVN. Resultados salvos em `results/ccr_results.csv`, `results/bcc_results.csv`, `results/scale_efficiency.csv`. |
+| ETAPA 4 | ✅ Concluída | Criado `ETAPA 4/visualization.py`. 5 gráficos gerados em `results/figures/`: `histogram_efficiency.png` (distribuição CCR vs BCC), `ranking_efficiency.png` (ranking horizontal por DMU), `ccr_vs_bcc.png` (scatter CCR vs BCC com labels), `benchmark_heatmap.png` (intensidade dos lambdas por DMU ineficiente), `improvement_targets.png` (metas de melhoria para CNQ, E e CVX). |
+| ETAPA 5 | ✅ Concluída | Criado `ETAPA 5/main.py`. Pipeline completo executado: carrega dados, roda CCR e BCC, calcula escala, gera visualizações e imprime relatório consolidado. Todos os scripts usam caminhos absolutos baseados em `__file__` para funcionar de qualquer diretório. Benchmark dominante: EQNR (12 DMUs) e PBR (10 DMUs). XOM é a única eficiente só no BCC (efeito de escala). |
+| ETAPA 6 | ✅ Concluída | Criado `ETAPA 6/analise_resultados.md`. Análise qualitativa completa com: eficiência por modelo (CCR 9/22, BCC 10/22), scores médios (1.0811 / 1.0591), benchmarks dominantes (EQNR 12×, PBR 10×), análise individual das 3 mais ineficientes (CNQ +26%, Eni +19%, CVX +18.5%), eficiência de escala (XOM único caso puro), e posição da Petrobras (eficiente em ambos, 2º benchmark mais usado, com caveat de outlier). |
+| ETAPA 7 | ✅ Concluída | Criado `ETAPA 7/relatorio_final.md`. Relatório acadêmico completo em português com 6 seções: Introdução, Apresentação do Problema (DMUs, variáveis, limitações, disclaimer), Formulação DEA (CCR e BCC com equações), Resultados (EDA, tabela de scores, benchmarks, metas de melhoria, análise XOM e PBR), Conclusões e Referências. Pronto para conversão em PDF. |
 
 ---
 
@@ -30,31 +45,72 @@ projeto_dea/
 
 ---
 
-## 📁 Organização por Etapas
+## ⚠️ Disclaimer e Limitações — Mencionar no Relatório Final
 
-Cada etapa deve ter seu próprio subgrupo (subpasta) com o nome da etapa. Todos os arquivos gerados ou utilizados naquela etapa devem ficar organizados dentro dessa pasta. Exemplo:
+### Justificativa da Amostra
+As empresas selecionadas são megacorporações globais listadas em bolsas internacionais, com operações em múltiplos países e dados reportados em dólares americanos, o que minimiza as distorções de comparação internacional típicas de estudos com unidades puramente domésticas. Isso fortalece a homogeneidade da amostra e a validade das comparações realizadas pelo DEA.
+
+### Limitações da Análise
+As seguintes limitações devem ser reconhecidas e discutidas na seção de Conclusões do relatório final:
+
+1. **Fonte dos dados (yfinance):** Os dados foram coletados automaticamente via API do Yahoo Finance, que pode apresentar inconsistências ou atrasos no reporte de dados financeiros, especialmente para empresas listadas em bolsas não americanas (ex: SHEL, BP, TTE, EQNR, E).
+
+2. **Ano fiscal não uniforme:** Nem todas as empresas encerram o ano fiscal em dezembro. Dados de diferentes períodos podem ser comparados, introduzindo viés temporal.
+
+3. **Outlier PBR (Petrobras):** A Petrobras apresenta-se como outlier em Total Assets, Receita Líquida e EBITDA. Sua escala desproporcionalmente grande pode distorcer os benchmarks do DEA, fazendo-a aparecer como eficiente por tamanho, não necessariamente por gestão.
+
+4. **Margem DEA limitada:** Com 22 DMUs e 5 variáveis (3 inputs + 2 outputs), o mínimo recomendado é 15. A margem de 7 é aceitável, mas ainda moderada — resultados devem ser interpretados com cautela.
+
+5. **Homogeneidade parcial:** A amostra inclui empresas de exploração, refino e serviços (SLB, HAL, BKR, FTI, WMB), que têm modelos de negócio distintos das majors integradas. Isso pode reduzir a comparabilidade entre DMUs.
+
+6. **Variáveis proxy:** `operatingExpenses` e `fullTimeEmployees` são proxies imperfeitos para eficiência operacional — não capturam qualidade de gestão, tecnologia ou contexto regulatório de cada país.
+
+> **Instrução para o relatório:** Incluir este disclaimer adaptado na seção de "Apresentação do Problema" e retomar as limitações na seção de "Conclusões".
+
+---
+
+## 📁 Organização por Etapas — Padrão Base do Projeto
+
+**Regra:** cada etapa tem sua própria subpasta com o nome da etapa. Todos os arquivos gerados (scripts, dados, resultados, figuras) ficam dentro dessa subpasta. Não existe pasta global `data/` ou `results/` — cada etapa é autossuficiente.
+
+Scripts de etapas posteriores que precisam de arquivos de etapas anteriores devem referenciar o caminho relativo correto (ex: `../ETAPA 1/data/processed_data.csv`).
 
 ```
-projeto_dea/
+Pesquisa Operacional/
+├── CLAUDE.md                         # este arquivo — base do projeto
+├── GUIA_PROJETO_DEA.md
 ├── ETAPA 0/
-│   ├── requirements.txt
-│   └── CLAUDE.md
+│   └── requirements.txt
 ├── ETAPA 1/
-│   └── collect_data.py
+│   ├── collect_data.py
+│   └── data/
+│       ├── raw_data.csv
+│       └── processed_data.csv
 ├── ETAPA 2/
-│   └── eda.py
+│   ├── eda.py
+│   └── figures/
+│       ├── boxplots.png
+│       └── correlation_heatmap.png
 ├── ETAPA 3/
-│   └── dea_models.py
+│   ├── dea_models.py
+│   └── results/
+│       ├── ccr_results.csv
+│       ├── bcc_results.csv
+│       └── scale_efficiency.csv
 ├── ETAPA 4/
-│   └── visualization.py
+│   ├── visualization.py
+│   └── figures/
+│       ├── histogram_efficiency.png
+│       ├── ranking_efficiency.png
+│       ├── ccr_vs_bcc.png
+│       ├── benchmark_heatmap.png
+│       └── improvement_targets.png
 ├── ETAPA 5/
-│   └── main.py
+│   └── main.py                       (pendente)
 ├── ETAPA 6/
-│   └── analise_resultados.md
-├── ETAPA 7/
-│   └── relatorio_final.md
-├── data/
-└── results/
+│   └── analise_resultados.md         (pendente)
+└── ETAPA 7/
+    └── relatorio_final.md            (pendente)
 ```
 
 ---
