@@ -17,7 +17,7 @@
 | ETAPA 4 | ✅ Concluída | Criado `ETAPA 4/visualization.py`. 5 gráficos gerados em `results/figures/`: `histogram_efficiency.png` (distribuição CCR vs BCC), `ranking_efficiency.png` (ranking horizontal por DMU), `ccr_vs_bcc.png` (scatter CCR vs BCC com labels), `benchmark_heatmap.png` (intensidade dos lambdas por DMU ineficiente), `improvement_targets.png` (metas de melhoria para CNQ, E e CVX). |
 | ETAPA 5 | ✅ Concluída | Criado `ETAPA 5/main.py`. Pipeline completo executado: carrega dados, roda CCR e BCC, calcula escala, gera visualizações e imprime relatório consolidado. Todos os scripts usam caminhos absolutos baseados em `__file__` para funcionar de qualquer diretório. Benchmark dominante: EQNR (12 DMUs) e PBR (10 DMUs). XOM é a única eficiente só no BCC (efeito de escala). |
 | ETAPA 6 | ✅ Concluída | Criado `ETAPA 6/analise_resultados.md`. Análise qualitativa completa com: eficiência por modelo (CCR 9/22, BCC 10/22), scores médios (1.0811 / 1.0591), benchmarks dominantes (EQNR 12×, PBR 10×), análise individual das 3 mais ineficientes (CNQ +26%, Eni +19%, CVX +18.5%), eficiência de escala (XOM único caso puro), e posição da Petrobras (eficiente em ambos, 2º benchmark mais usado, com caveat de outlier). |
-| ETAPA 7 | ✅ Concluída | Criado `ETAPA 7/relatorio_final.md`. Relatório acadêmico completo em português com 6 seções: Introdução, Apresentação do Problema (DMUs, variáveis, limitações, disclaimer), Formulação DEA (CCR e BCC com equações), Resultados (EDA, tabela de scores, benchmarks, metas de melhoria, análise XOM e PBR), Conclusões e Referências. Pronto para conversão em PDF. |
+| ETAPA 7 | ✅ Concluída (v2) | Atualizado `ETAPA 7/relatorio_final.md` com formatação completa seguindo documento de referência (`relatorio_metrologia_claudecomcapaprarevisar.docx`). Capa com dados do aluno (Henrique Arbex, RA 284675), 7 seções em maiúsculas, 7 figuras numeradas com legenda abaixo, 7 tabelas numeradas com legenda abaixo, equações CCR (1-4) e BCC (5-9) numeradas, referências em ABNT NBR 6023, linguagem acadêmica em português. CLAUDE.md atualizado com seção de instruções de formatação. |
 
 ---
 
@@ -42,6 +42,55 @@ projeto_dea/
 └── relatorio/
     └── relatorio_final.md     # rascunho do relatório
 ```
+
+---
+
+## RELATÓRIO FINAL — INSTRUÇÕES DE ESTILO E FORMATAÇÃO
+
+**Referência visual:** `relatorio_metrologia_claudecomcapaprarevisar.docx` (raiz do repositório)
+
+### Dados do Trabalho
+- **Aluno:** Henrique Arbex Rodrigues Piscopo | **RA:** 284675
+- **Professora:** Priscila Rampazzo
+- **Disciplina:** Pesquisa Operacional — LE505
+- **Instituição:** Universidade Estadual de Campinas — FCA (Faculdade de Ciências Aplicadas)
+- **Cidade:** Limeira | **Ano:** 2026
+
+### Capa
+- Linha 1 (direita): "LE505 - Pesquisa Operacional"
+- Linha 2 (direita): "Prof.ª Priscila Rampazzo"
+- Linha 3 (centro, negrito): "Universidade Estadual de Campinas"
+- Linha 4 (centro, negrito): "FCA – Faculdade de Ciências Aplicadas"
+- Linha 5 (centro): Título completo do trabalho
+- Linha 6: "Junho/2026"
+- Bloco autoria (negrito): "Henrique Arbex Rodrigues Piscopo    RA: 284675"
+- Rodapé: "Limeira" e "2026"
+
+### Estrutura de Seções (nomes exatos, maiúsculas)
+1. RESUMO | 2. INTRODUÇÃO | 3. APRESENTAÇÃO DO PROBLEMA | 4. ANÁLISE ENVOLTÓRIA DE DADOS | 5. RESULTADOS E DISCUSSÕES | 6. CONCLUSÕES | 7. REFERÊNCIAS BIBLIOGRÁFICAS
+
+### Subseções
+Títulos em negrito, primeira letra maiúscula, sem numeração. Texto segue na mesma linha após ponto: **Modelo CCR.** Texto aqui.
+
+### Figuras (7 obrigatórias)
+Numeradas sequencialmente. Legenda ABAIXO em negrito: **Figura N.** Descrição. Referenciar no texto antes: "(ver Figura N)".
+Figura 1: Histograma scores | Figura 2: Ranking | Figura 3: Scatter CCR vs BCC | Figura 4: Heatmap benchmarks | Figura 5: Boxplots | Figura 6: Correlação | Figura 7: Metas de melhoria
+
+### Tabelas (7 obrigatórias)
+Numeradas sequencialmente. Legenda ABAIXO em negrito: **Tabela N.** Descrição. Referenciar no texto antes: "(ver Tabela N)".
+Tabela 1: DMUs | Tabela 2: Estatísticas descritivas | Tabela 3: Scores CCR e BCC | Tabela 4: DMUs eficientes | Tabela 5: Benchmarks e lambdas | Tabela 6: Metas de melhoria | Tabela 7: Eficiência de escala
+
+### Texto
+Português formal e acadêmico. Sem bullets no corpo — prosa corrida. Variáveis em itálico: *θ*, *λ*. Siglas por extenso na primeira menção.
+
+### Equações
+Numeradas à direita: (1), (2)... CCR: equações (1)–(4). BCC: equações (5)–(9).
+
+### Referências (ABNT NBR 6023)
+CHARNES et al. (1978), BANKER et al. (1984), COOPER et al. (2007), yfinance, PuLP.
+
+### Limite: máximo 15 páginas
+Capa(1) + Resumo+Intro(1) + Problema(1-2) + DEA teoria(2) + Resultados(6-7) + Conclusões(1) + Refs(0,5)
 
 ---
 
